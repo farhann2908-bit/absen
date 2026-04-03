@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Absen Pacar 💖</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: linear-gradient(to right, #ff9a9e, #fad0c4);
+  text-align: center;
+  transition: 0.3s;
+}
+
+.dark {
+  background: #1e1e1e;
+  color: white;
+}
+
+h1 {
+  color: #ff3366;
+}
+
+.box {
+  background: white;
+  padding: 20px;
+  width: 300px;
+  margin: 20px auto;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+.dark .box {
+  background: #333;
+}
+
+input, select, button {
+  width: 90%;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  background: #ff3366;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #cc0052;
+}
+
+table {
+  margin: 20px auto;
+  border-collapse: collapse;
+  width: 90%;
+}
+
+th, td {
+  border: 1px solid #ff99bb;
+  padding: 10px;
+}
+
+th {
+  background: #ff3366;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<h1>💖 Absen Pacar 💖</h1>
+
+<!-- LOGIN -->
+<div class="box" id="loginBox">
+  <h3>Login Dulu 💌</h3>
+  <input type="text" id="user" placeholder="Nama kamu / pacar">
+  <button onclick="login()">Masuk</button>
+</div>
+
+<!-- ABSEN -->
+<div id="app" style="display:none;">
+
+<div class="box">
+  <h3 id="welcome"></h3>
+
+  <input type="text" id="nama" placeholder="Isi nama">
+  
+  <select id="status">
+    <option>Hadir 😎</option>
+    <option>Kangen 😢</option>
+    <option>Marah 😡</option>
+    <option>Sayang ❤️</option>
+  </select>
+
+  <button onclick="absen()">Absen</button>
+  <button onclick="hapus()">Hapus Semua</button>
+  <button onclick="toggleDark()">🌙 Dark Mode</button>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Nama</th>
+<th>Status</th>
+<th>Waktu</th>
+</tr>
+</thead>
+<tbody id="tabel"></tbody>
+</table>
+
+<!-- MUSIK -->
+<audio controls autoplay loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+</audio>
+
+</div>
+
+<script>
+// LOGIN
+function login() {
+  let user = document.getElementById("user").value;
+  if (user == "") {
+    alert("Isi nama dulu!");
+    return;
+  }
+
+  localStorage.setItem("user", user);
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  document.getElementById("welcome").innerText = "Halo " + user + " 💖";
+  loadData();
+}
+
+// AUTO LOGIN
+if (localStorage.getItem("user")) {
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  document.getElementById("welcome").innerText =
+    "Halo " + localStorage.getItem("user") + " 💖";
+  loadData();
+}
+
+// ABSEN
+function absen() {
+  let nama = document.getElementById("nama").value;
+  let status = document.getElementById("status").value;
+  let waktu = new Date().toLocaleString();
+
+  if (nama == "") {
+    alert("Isi nama dulu!");
+    return;
+  }
+
+  let data = JSON.parse(localStorage.getItem("absen")) || [];
+  data.push({nama, status, waktu});
+  localStorage.setItem("absen", JSON.stringify(data));
+
+  document.getElementById("nama").value = "";
+  loadData();
+}
+
+// LOAD DATA
+function loadData() {
+  let tabel = document.getElementById("tabel");
+  tabel.innerHTML = "";
+
+  let data = JSON.parse(localStorage.getItem("absen")) || [];
+
+  data.forEach(item => {
+    let row = tabel.insertRow();
+    row.insertCell(0).innerText = item.nama;
+    row.insertCell(1).innerText = item.status;
+    row.insertCell(2).innerText = item.waktu;
+  });
+}
+
+// HAPUS
+function hapus() {
+  if (confirm("Yakin hapus semua? 😢")) {
+    localStorage.removeItem("absen");
+    loadData();
+  }
+}
+
+// DARK MODE
+function toggleDark() {
+  document.body.classList.toggle("dark");
+}
+</script>
+
+</body>
+</html>
